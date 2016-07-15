@@ -14,9 +14,10 @@ import java.util.Random;
  * lists, including:
  *
  * 1) Merge sort
- * 2) Insertion sort
- * 3) Selection sort
- * 4) Bubble sort
+ * 2) Quick sort
+ * 3) Insertion sort
+ * 4) Selection sort
+ * 5) Bubble sort
  *
  * The generic type of the list must implement the Comparable interface.
  *
@@ -51,6 +52,7 @@ public class Sorts {
     arrayIntoList(a, list);
   }
 
+  
   /**
    * Recursive method which calls itself on two halves of the
    * array "a". The base case is when "a" is a single element
@@ -58,6 +60,8 @@ public class Sorts {
    * of the array, this method merges the two sorted sub-arrays.
    */
   private static void mergeSort(Object[] a, int low, int high) {
+    assert(a != null);
+    assert(high < a.length);
 
     // Base case: low == high means "a" is a one-element array.
     if (low < high) {
@@ -116,6 +120,81 @@ public class Sorts {
       }
     }
   }
+
+
+  /**
+   * Sorts the passed list using O(n log n) quick sort (expected case), and
+   * O(n^2) in the degenerate worst case. Modifies the passed list.
+   *
+   * The list is first copied into an array, since we use indexes
+   * for this algorithm. After the array is sorted, it is written
+   * back into the passed list.
+   *
+   * NOTE: We can optimize this algorithm by coding a method to ensure
+   * the pivot is close to the median value of the array each time.
+   *
+   * @param list The list to be sorted.
+   * @param T generic type of list element, which must implement Comparable.
+   */
+  @SuppressWarnings("unchecked")
+  public static <T extends Comparable<T>> void quickSort(List<T> list) {
+    assert(list != null);
+
+    // First, copy the list into an array.
+    Object[] a = list.toArray();
+
+    // Call quick sort on entire array.
+    quickSort(a, 0, a.length - 1);
+
+    // Write the sorted array back into the list.
+    arrayIntoList(a, list);
+  }
+
+  /**
+   * Recursive method which chooses a "pivot", then places all
+   * all values less than the "pivot" at the left of the array
+   * (not necessarily ordered). We finally place the "pivot"
+   * in between the lesser values and the greater (or equal) values.
+   * This places the "pivot" in it's final position. Finally, recurse
+   * on the lesser values to the left of the "pivot", and the greater
+   * or equal values to the right of the "pivot".
+   *
+   * NOTE: Choosing a "pivot" which is about the median value
+   * would guarantee O(n log n) running time.
+   */
+  @SuppressWarnings("unchecked")
+  private static void quickSort(Object[] a, int low, int high) {
+    assert(a != null);
+    assert(high < a.length);
+
+    // Base case: low == high means a one element sized array.
+    if (low < high) {
+
+      int pivot = high;  // Choose pivot at the end of the array.
+      int wall = low;
+      // Move all items less than the pivot to the left of the
+      // "wall", while all the items larger than the pivot remain
+      // to the right of the "wall".
+      //
+      for (int current = low; current <= high; current++) {
+	if (((Comparable) a[current]).compareTo(a[pivot]) < 0) {
+	  swap(a, current, wall);
+	  wall++;
+	}
+      }
+      // Finally, place the pivot in between the lesser values
+      // and the greater values at the "wall", which is it's
+      // final position.
+      //
+      swap(a, pivot, wall);
+
+      // Recurse on the values less than the pivot.
+      quickSort(a, low, wall - 1);
+      // Recurse on the values greater than the pivot.      
+      quickSort(a, wall + 1, high);
+    }
+  }
+
 
   /**
    * Sorts the passed list using O(n^2) insertion sort. Modifies the
@@ -296,6 +375,15 @@ public class Sorts {
     }
     System.out.println();
 
+    // Test quick sort.
+    System.out.println("Quick Sort");
+    for (int listSize : testListSizes) {
+      testList = createTestList(listSize);
+      quickSort(testList);
+      assert(validateSorted(testList));
+    }
+    System.out.println();
+      
     // Test insertion sort.
     System.out.println("Insertion Sort");
     for (int listSize : testListSizes) {

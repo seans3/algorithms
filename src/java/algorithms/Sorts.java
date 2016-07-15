@@ -23,7 +23,6 @@ import java.util.Random;
  * @author Sean Sullivan (seans3@gmail.com)
  *
  * Copyright (C) 2016 Sean Sullivan
- *
  */
 public class Sorts {
 
@@ -286,41 +285,41 @@ public class Sorts {
     System.out.println();
 
     List<Integer> testListSizes = Arrays.asList(0, 1 ,2, 3, 10000);
-    List<Integer> test;
+    List<Integer> testList;
     
     // Test merge sort.
     System.out.println("Merge Sort");
     for (int listSize : testListSizes) {
-      test = createTestList(listSize);
-      mergeSort(test);
-      assert(validateSorted(test));
+      testList = createTestList(listSize);
+      mergeSort(testList);
+      assert(validateSorted(testList));
     }
     System.out.println();
 
     // Test insertion sort.
     System.out.println("Insertion Sort");
     for (int listSize : testListSizes) {
-      test = createTestList(listSize);
-      insertionSort(test);
-      assert(validateSorted(test));
+      testList = createTestList(listSize);
+      insertionSort(testList);
+      assert(validateSorted(testList));
     }
     System.out.println();
 
     // Test selection sort.
     System.out.println("Selection Sort");
     for (int listSize : testListSizes) {
-      test = createTestList(listSize);
-      selectionSort(test);
-      assert(validateSorted(test));
+      testList = createTestList(listSize);
+      selectionSort(testList);
+      assert(validateSorted(testList));
     }
     System.out.println();
     
     // Test bubble sort.
     System.out.println("Bubble Sort");
     for (int listSize : testListSizes) {
-      test = createTestList(listSize);
-      bubbleSort(test);
-      assert(validateSorted(test));
+      testList = createTestList(listSize);
+      bubbleSort(testList);
+      assert(validateSorted(testList));
     }
     System.out.println();
 

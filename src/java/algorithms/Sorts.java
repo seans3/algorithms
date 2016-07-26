@@ -15,9 +15,10 @@ import java.util.Random;
  *
  * 1) Merge sort
  * 2) Quick sort
- * 3) Insertion sort
- * 4) Selection sort
- * 5) Bubble sort
+ * 3) Shell sort
+ * 4) Insertion sort
+ * 5) Selection sort
+ * 6) Bubble sort
  *
  * The generic type of the list must implement the Comparable interface.
  *
@@ -195,6 +196,46 @@ public class Sorts {
     }
   }
 
+  /**
+   * Sorts the passed list using O(n^2) shell sort. Modifies the
+   * passed list.
+   *
+   * Shell sort is a generalization of insetion sort.
+   *
+   * The list is first copied into an array, since we use indexes
+   * for this algorithm. After the array is sorted, it is written
+   * back into the passed list.
+   *
+   * @param list The list to be sorted.
+   * @param T generic type of list element, which must implement Comparable.
+   */
+  @SuppressWarnings("unchecked")
+  public static <T extends Comparable<T>> void shellSort(List<T> list) {
+    assert(list != null);
+
+    // First, copy the list into an array.
+    Object[] a = list.toArray();
+
+    // Calculate the gap which defines the sublists. When the gap is
+    // 1, then shell sort is the same as insertion sort.
+    //
+    int gap = (int) Math.floor(a.length / 2);
+    while (gap >= 1) {
+      for (int end = gap; end < a.length; end++) {
+	int j = end;
+	int i = j - gap;
+	while ((i >= 0) && ((Comparable) a[i]).compareTo(a[j]) > 0) {
+	  swap(a, i, j);
+	  j = i;
+	  i = j - gap;
+	}
+      }
+      gap = (int) Math.floor(gap / 2);  // Reduce the gap, until it is 1.
+    }
+
+    // Write the sorted array back into the list.
+    arrayIntoList(a, list);    
+  }
 
   /**
    * Sorts the passed list using O(n^2) insertion sort. Modifies the
@@ -310,11 +351,12 @@ public class Sorts {
     assert(index1 < a.length);
     assert(index2 < a.length);
 
-    Object temp = a[index1];
-    a[index1] = a[index2];
-    a[index2] = temp;
+    if (index1 != index2) {
+      Object temp = a[index1];
+      a[index1] = a[index2];
+      a[index2] = temp;
+    }
   }
-
 
   /**
    * Helper method which writes the elements of sorted array "a"
@@ -383,7 +425,16 @@ public class Sorts {
       assert(validateSorted(testList));
     }
     System.out.println();
-      
+
+    // Test shell sort.
+    System.out.println("Shell Sort");
+    for (int listSize : testListSizes) {
+      testList = createTestList(listSize);
+      insertionSort(testList);
+      assert(validateSorted(testList));
+    }
+    System.out.println();
+    
     // Test insertion sort.
     System.out.println("Insertion Sort");
     for (int listSize : testListSizes) {

@@ -1,0 +1,16 @@
+# Compiled source #
+###################
+*.class
+
+# Packages #
+############
+*.jar
+*.war
+*.ear
+*.gz
+*.zip
+
+# Logs #
+########
+*.log
+hs_err_pid*

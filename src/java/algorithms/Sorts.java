@@ -197,10 +197,12 @@ public class Sorts {
   }
 
   /**
-   * Sorts the passed list using O(n^2) shell sort. Modifies the
-   * passed list.
-   *
-   * Shell sort is a generalization of insetion sort.
+   * Sorts the passed list using shell sort. Modifies the passed list.
+   * Shell sort is a generalization of insertion sort. This sort starts
+   * by sorting pairs of elements far away from each other, then progressively
+   * reducing this "gap". Analysis of Shell sort is complicated, and depends
+   * on the "gap". This implementation halves the "gap" at each iteration, and
+   * the worst-case asymptotic runtime is O(n^2).
    *
    * The list is first copied into an array, since we use indexes
    * for this algorithm. After the array is sorted, it is written

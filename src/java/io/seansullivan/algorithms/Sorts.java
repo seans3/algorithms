@@ -1,4 +1,4 @@
-package algorithms;
+package io.seansullivan.algorithms;
 
 import java.lang.Comparable;
 import java.lang.System;

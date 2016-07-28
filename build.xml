@@ -1,0 +1,38 @@
+<project name="Algorithms Project" default="run" basedir=".">
+
+  <description>
+    Build file for Algorithms projects
+  </description>
+
+  <!-- set global properties for this build -->
+  <property name="main.src.dir" location="src/java"/>
+  <property name="main.build.dir" value="build/java"/>
+  <property name="project.name" value="algorithms"/>
+
+  <path id="classpath.main">
+    <pathelement location="${main.build.dir}"/>
+  </path>
+
+  <target name="compile">
+    <mkdir dir="${main.build.dir}"/>
+    <javac fork="true"
+           srcdir="${main.src.dir}"
+           destdir="${main.build.dir}"
+           includeantruntime="false"
+           includes="**/*.java">
+      <classpath refid="classpath.main"/>
+    </javac>
+  </target>
+
+  <target name="run" depends="compile">
+    <java fork="true" classname="io.seansullivan.algorithms.Sorts">
+      <classpath refid="classpath.main"/>
+      <assertions enableSystemAssertions="true"/>
+    </java>
+  </target>
+  
+  <target name="clean">
+    <delete dir="${main.build.dir}"/>
+  </target>
+
+</project>

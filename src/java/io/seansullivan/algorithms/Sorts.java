@@ -15,10 +15,15 @@ import java.util.Random;
  *
  * 1) Merge sort
  * 2) Quick sort
- * 3) Shell sort
- * 4) Insertion sort
- * 5) Selection sort
- * 6) Bubble sort
+ * 3) Heap sort
+ * 4) Shell sort
+ * 5) Insertion sort
+ * 6) Selection sort
+ * 7) Bubble sort
+ *
+ * Sorts to implement in future:
+ * 1) Iterative merge sort
+ * 2) Radix sort (String, Integer)
  *
  * The generic type of the list must implement the Comparable interface.
  *
@@ -30,7 +35,7 @@ public class Sorts {
 
   /**
    * Sorts the passed list using O(n log n) merge sort. Modifies the
-   * passed list.
+   * passed list. Sorts in ascending order.
    *
    * The list is first copied into an array, since we use indexes
    * for this algorithm. After the array is sorted, it is written
@@ -122,10 +127,10 @@ public class Sorts {
     }
   }
 
-
   /**
    * Sorts the passed list using O(n log n) quick sort (expected case), and
-   * O(n^2) in the degenerate worst case. Modifies the passed list.
+   * O(n^2) in the degenerate worst case. Modifies the passed list. Sorts
+   * in ascending order.
    *
    * The list is first copied into an array, since we use indexes
    * for this algorithm. After the array is sorted, it is written
@@ -173,6 +178,7 @@ public class Sorts {
 
       int pivot = high;  // Choose pivot at the end of the array.
       int wall = low;
+
       // Move all items less than the pivot to the left of the
       // "wall", while all the items larger than the pivot remain
       // to the right of the "wall".
@@ -183,6 +189,7 @@ public class Sorts {
 	  wall++;
 	}
       }
+
       // Finally, place the pivot in between the lesser values
       // and the greater values at the "wall", which is it's
       // final position.
@@ -197,12 +204,127 @@ public class Sorts {
   }
 
   /**
+   * Sorts the passed list using O(n log n) heap sort. The items are
+   * sorted in ascending order. This algorithm uses a data structure
+   * called a heap. A heap is a binary tree which maintains a partial
+   * ordering where the parent "dominates" the two children.
+   *
+   * The list is first copied into an array, since we use indexes
+   * for this algorithm. After the array is sorted, it is written
+   * back into the passed list.
+   *
+   * @param list The list to be sorted.
+   * @param T generic type of list element, which must implement Comparable.
+   */
+  @SuppressWarnings("unchecked")
+  public static <T extends Comparable<T>> void heapSort(List<T> list) {
+    assert(list != null);
+
+    // First, copy the list into an array.
+    Object[] a = list.toArray();
+
+    // First, create the heap.
+    heapify(a);
+    
+    // Iteratively grab the max element from the top of the heap,
+    // then ensure the heap property.
+    //
+    for (int i = a.length - 1; i > 0; i--) {
+      swap(a, 0, i);
+      bubbleDown(a, 0, (i - 1));
+    }    
+    
+    // Write the sorted array back into the list.
+    arrayIntoList(a, list);
+  }
+
+  /**
+   * For all non-leaf nodes, fix heap property.
+   */
+  @SuppressWarnings("unchecked")
+  private static void heapify(Object[] a) {
+    assert(a != null);
+
+    int parentIdx = 0;
+    int lastIdx = a.length - 1;
+    while (hasLeftChild(parentIdx, lastIdx)) {
+      bubbleDown(a, parentIdx, lastIdx);
+      parentIdx++;
+    }
+  }
+
+  /**
+   * Continually swaps the parent element with the largest child
+   * element until the heap property is restored or the parent element
+   * ends up as a leaf.
+   */
+  @SuppressWarnings("unchecked")
+  private static void bubbleDown(Object[] a, int parentIdx, int lastIdx) {
+    assert(a != null);
+    assert(parentIdx >= 0);
+    assert(parentIdx <= lastIdx);
+
+    boolean swapped = true;
+    // hasLeftChild() determines if the parent has any children.
+    while (swapped && hasLeftChild(parentIdx, lastIdx)) {
+      // Swapping with the largest child is necessary to maintain heap property.
+      int largestChildIdx = largestChild(a, parentIdx, lastIdx);
+      if (((Comparable) a[largestChildIdx]).compareTo(a[parentIdx]) > 0) {
+	swap(a, parentIdx, largestChildIdx);
+	parentIdx = largestChildIdx;	
+      } else {
+	swapped = false;
+      }
+    }
+  }
+
+  /**
+   * Returns the index of the larger of a parents two children. Assumes
+   * at least the left child exists.
+   */
+  @SuppressWarnings("unchecked")
+  private static int largestChild(Object[] a, int parentIdx, int lastIdx) {
+    assert(hasLeftChild(parentIdx, lastIdx));
+
+    int leftChildIdx = leftChild(parentIdx);
+    int largestChildIdx = leftChildIdx;
+    if (hasRightChild(parentIdx, lastIdx)) {
+      int rightChildIdx = rightChild(parentIdx);
+      if (((Comparable) a[rightChildIdx]).compareTo(a[leftChildIdx]) > 0) {
+	largestChildIdx = rightChildIdx;
+      }
+    }
+    return largestChildIdx;
+  }
+
+  // Returns index of left child assuming 0-based arrays.
+  private static int leftChild(int parentIdx) {
+    return ((2 * parentIdx) + 1);
+  }
+
+  // Returns index of right child assuming 0-based arrays.
+  private static int rightChild(int parentIdx) {
+    return ((2 * parentIdx) + 2);
+  }
+
+  private static boolean hasLeftChild(int parentIdx, int lastIdx) {
+    return (leftChild(parentIdx) <= lastIdx);
+  }
+
+  private static boolean hasRightChild(int parentIdx, int lastIdx) {
+    return (rightChild(parentIdx) <= lastIdx);
+  }
+
+
+  /**
    * Sorts the passed list using shell sort. Modifies the passed list.
    * Shell sort is a generalization of insertion sort. This sort starts
    * by sorting pairs of elements far away from each other, then progressively
    * reducing this "gap". Analysis of Shell sort is complicated, and depends
    * on the "gap". This implementation halves the "gap" at each iteration, and
    * the worst-case asymptotic runtime is O(n^2).
+   *
+   * Sorts elements in ascending order.
    *
    * The list is first copied into an array, since we use indexes
    * for this algorithm. After the array is sorted, it is written
@@ -243,6 +365,8 @@ public class Sorts {
    * Sorts the passed list using O(n^2) insertion sort. Modifies the
    * passed list.
    *
+   * Sorts elements in ascending order.
+   *
    * The list is first copied into an array, since we use indexes
    * for this algorithm. After the array is sorted, it is written
    * back into the passed list.
@@ -276,6 +400,8 @@ public class Sorts {
   /**
    * Sorts the passed list using O(n^2) selection sort. Modifies the
    * passed list.
+   *
+   * Sorts elements in ascending order.
    *
    * The list is first copied into an array, since we use indexes
    * for this algorithm. After the array is sorted, it is written
@@ -312,6 +438,8 @@ public class Sorts {
   /**
    * Sorts the passed list using O(n^2) bubble sort. Modifies the
    * passed list.
+   *
+   * Sorts elements in ascending order.
    *
    * The list is first copied into an array, since we use indexes
    * for this algorithm. After the array is sorted, it is written
@@ -380,7 +508,7 @@ public class Sorts {
     Random rand = new Random();
     List<Integer> list = new ArrayList<Integer>(size);
     for (int i = 0; i < size; i++) {
-      int randomInt = rand.nextInt();
+      int randomInt = rand.nextInt(size);
       list.add(randomInt);
     }
     return list;
@@ -407,7 +535,7 @@ public class Sorts {
     System.out.println("STARTING Sort Test...");
     System.out.println();
 
-    List<Integer> testListSizes = Arrays.asList(0, 1 ,2, 3, 10000);
+    List<Integer> testListSizes = Arrays.asList(1, 2, 3, 10000);
     List<Integer> testList;
     
     // Test merge sort.
@@ -424,6 +552,15 @@ public class Sorts {
     for (int listSize : testListSizes) {
       testList = createTestList(listSize);
       quickSort(testList);
+      assert(validateSorted(testList));
+    }
+    System.out.println();
+
+    // Test heap sort.
+    System.out.println("Heap Sort");
+    for (int listSize : testListSizes) {
+      testList = createTestList(listSize);
+      heapSort(testList);
       assert(validateSorted(testList));
     }
     System.out.println();

@@ -248,7 +248,10 @@ public class Sorts {
     int parentIdx = 0;
     int lastIdx = a.length - 1;
     while (hasLeftChild(parentIdx, lastIdx)) {
-      bubbleDown(a, parentIdx, lastIdx);
+      int largestChildIdx = largestChild(a, parentIdx, lastIdx);
+      if (((Comparable) a[largestChildIdx]).compareTo(a[parentIdx]) > 0) {
+	swap(a, parentIdx, largestChildIdx);
+      }
       parentIdx++;
     }
   }

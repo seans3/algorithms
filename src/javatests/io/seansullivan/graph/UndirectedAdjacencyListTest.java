@@ -166,6 +166,19 @@ public class UndirectedAdjacencyListTest {
   }
 
   @Test
+  public void breadthFirstSeachExploresAllReachableVertices() throws Exception {
+    Set<Vertex> reachable = adjList.breadthFirstSearch();
+    assertEquals(allVertices, reachable);
+    UndirectedAdjacencyList adjList2 = new UndirectedAdjacencyList();
+    adjList2.addEdge(edge12);
+    adjList2.addEdge(edge13);
+    adjList2.addEdge(edge46);
+    adjList2.addEdge(edge56);
+    reachable = adjList2.breadthFirstSearch();
+    assertNotEquals(allVertices, reachable);
+  }
+  
+  @Test
   public void equalsDependsOnVerticesAndEdges() throws Exception {
     assertTrue(adjList.equals(adjList));  // Reflexivity
     UndirectedAdjacencyList adjList2 = new UndirectedAdjacencyList();

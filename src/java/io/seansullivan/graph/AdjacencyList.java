@@ -137,6 +137,15 @@ public abstract class AdjacencyList {
   }
 
   /**
+   * @returns true if the graph is connected (every vertex reachable by every other
+   *    vertex within the graph by some path).
+   */
+  public boolean isConnected() {
+    Set<Vertex> reachable = breadthFirstSearch();
+    return vertices.equals(reachable);
+  }
+  
+  /**
    * @return the number of edges incident to this vertex.
    */
   public int degree(Vertex v) {

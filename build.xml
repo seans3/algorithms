@@ -1,4 +1,4 @@
-<project name="Algorithms Project" default="run" basedir=".">
+<project name="Algorithms Project" default="test" basedir=".">
 
   <description>
     Build file for Algorithms projects
@@ -6,11 +6,23 @@
 
   <!-- set global properties for this build -->
   <property name="main.src.dir" location="src/java"/>
+  <property name="test.src.dir" location="src/javatests"/>
   <property name="main.build.dir" value="build/java"/>
+  <property name="test.build.dir" value="build/javatests"/>
+  <property name="lib.dir" value="lib/java"/>
   <property name="project.name" value="algorithms"/>
 
   <path id="classpath.main">
     <pathelement location="${main.build.dir}"/>
+    <pathelement location="${lib.dir}/third-party/guava-19.0.jar"/>
+  </path>
+
+  <path id="classpath.test">
+    <path refid="classpath.main"/>
+    <pathelement location="${lib.dir}/third-party/hamcrest-all-1.3.jar"/>
+    <pathelement location="${lib.dir}/third-party/mockito-all-1.10.19.jar"/>
+    <pathelement location="${lib.dir}/third-party/junit-4.12.jar"/>
+    <pathelement location="${test.build.dir}"/>
   </path>
 
   <target name="compile">
@@ -24,6 +36,27 @@
     </javac>
   </target>
 
+  <target name="compile-tests" depends="compile">
+    <mkdir dir="${test.build.dir}"/>
+    <javac srcdir="${test.src.dir}"
+           destdir="${test.build.dir}"
+           includeantruntime="false"
+           includes="**/*Test.java">
+      <classpath refid="classpath.test"/>
+    </javac>
+  </target>
+
+  <!-- Test using junit -->
+  <target name="test" depends="compile-tests">
+    <junit printsummary="yes">
+      <classpath refid="classpath.test"/>
+      <formatter type="plain" usefile="false"/> <!-- Update this -->
+      <batchtest fork="yes">
+        <fileset dir="${test.build.dir}"/>
+      </batchtest>
+    </junit>
+  </target>
+
   <target name="run" depends="compile">
     <java fork="true" classname="io.seansullivan.algorithms.Sorts">
       <classpath refid="classpath.main"/>
@@ -33,6 +66,7 @@
   
   <target name="clean">
     <delete dir="${main.build.dir}"/>
+    <delete dir="${test.build.dir}"/>
   </target>
 
 </project>

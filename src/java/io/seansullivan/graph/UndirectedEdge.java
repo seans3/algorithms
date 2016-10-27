@@ -27,6 +27,29 @@ public class UndirectedEdge extends Edge {
   }
 
   /**
+   * @return true if the edge is a "frontier" edge in the sense that
+   *    one vertex of the edge lies within the set of vertices, and
+   *    one vertex is outside the set of vertices.
+   */
+  public boolean crosses(Set<Vertex> vertices) {
+    boolean isCrossingEdge = false;
+
+    Vertex first = getFirst();
+    Vertex second = getSecond();
+    if (vertices.contains(first)) {
+      if (!vertices.contains(second)) {
+	isCrossingEdge = true;
+      }
+    } else if (vertices.contains(second)) {
+      if (!vertices.contains(first)) {
+	isCrossingEdge = true;
+      }
+    }
+
+    return isCrossingEdge;
+  }
+  
+  /**
    * Given the passed vertex, return the "other" vertex for this edge.
    *
    * @param first one of the vertices for this edge.

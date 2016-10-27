@@ -42,6 +42,20 @@ public class DirectedEdge extends Edge {
   }
 
   /**
+   * @return true if the edge is a "frontier" edge in the sense that
+   *    the tail vertex of the edge lies within the set of vertices, and
+   *    head vertex is outside the set of vertices.
+   */
+  public boolean crosses(Set<Vertex> vertices) {
+    boolean isCrossingEdge = false;
+    if (vertices.contains(getTail()) &&
+	!vertices.contains(getHead())) {
+	isCrossingEdge = true;
+    }
+    return isCrossingEdge;
+  }
+  
+  /**
    * Ordering of edge vertices matters for equality. We don't
    * consider weights, since we don't allow parallel vertices.
    */

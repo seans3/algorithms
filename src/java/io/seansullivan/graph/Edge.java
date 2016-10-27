@@ -61,6 +61,8 @@ public abstract class Edge implements Comparable<Edge> {
   public float getWeight() {
     return weight;
   }
+
+  public abstract boolean crosses(Set<Vertex> vertices);
   
   /**
    * Edges are compared based on weights in ascending order.

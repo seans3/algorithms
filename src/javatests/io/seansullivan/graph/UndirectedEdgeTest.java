@@ -3,6 +3,9 @@ package io.seansullivan.graph;
 import static org.junit.Assert.*;
 import static org.hamcrest.CoreMatchers.*;
 
+import java.util.HashSet;
+import java.util.Set;
+
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
@@ -50,6 +53,18 @@ public class UndirectedEdgeTest {
     assertEquals(Edge.DEFAULT_EDGE_WEIGHT, edge.getWeight(), 0.0f);
   }
 
+  @Test
+  public void crossesReturnsTrueIfFrontierEdge() throws Exception {
+    Set<Vertex> vertices = new HashSet<Vertex>();
+    assertFalse(edge.crosses(vertices));
+    vertices.add(vertex1);
+    assertTrue(edge.crosses(vertices));
+    vertices.add(vertex2);
+    assertFalse(edge.crosses(vertices));
+    vertices.remove(vertex1);
+    assertTrue(edge.crosses(vertices));
+  }
+  
   @Test
   public void otherReturnsOppositeVertex() throws Exception {
     assertEquals(vertex2, edge.other(vertex1));
